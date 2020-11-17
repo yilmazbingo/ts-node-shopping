@@ -48,7 +48,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({ storage: fileStorage, fileFilter }).single("image")); //arrray for multiple
 
 app.use(helmet());
-app.use(compression()); //exludes images, assets<1kb
+app.use(compression()); //exludes images, assets<1kb, heroku does not compress
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join(__dirname, "images")));

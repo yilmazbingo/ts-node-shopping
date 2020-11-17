@@ -12,6 +12,10 @@
 
 NOTE: do not use concurently instead of npm-run-all. it wont work
 
+### Install Heroku n
+
+`$ sudo npm i -g heroku`
+
 ### Create Stripe Session in node:
 
 ```

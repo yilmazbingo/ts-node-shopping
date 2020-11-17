@@ -57,7 +57,7 @@ app.use(cors_1.default());
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use(multer_1.default({ storage: constants_1.fileStorage, fileFilter: constants_1.fileFilter }).single("image")); //arrray for multiple
 app.use(helmet_1.default());
-app.use(compression_1.default()); //exludes images, assets<1kb
+app.use(compression_1.default()); //exludes images, assets<1kb, heroku does not compress
 app.use(express_1.default.static(path_1.default.join(__dirname, "public")));
 app.use("/images", express_1.default.static(path_1.default.join(__dirname, "images")));
 app.use(express_session_1.default({
