@@ -32,7 +32,12 @@
             </div>
             <%- include('../includes/pagination.ejs', {currentPage: currentPage, nextPage: nextPage, previousPage: previousPage, lastPage: lastPage, hasNextPage: hasNextPage, hasPreviousPage: hasPreviousPage}) %>
         <% } else { %>
-            <h1 class="empty-shop">No Products Found!</h1>
+            <div class="empty-shop">
+                <h1 >No Products Found!</h1>
+            <h1>You can upload if you sign up!</h1>
+            </div>
+            
+
         <% } %>
     </main>
 <%- include('../includes/end.ejs') %>
