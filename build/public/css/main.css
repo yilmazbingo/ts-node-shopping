@@ -64,7 +64,7 @@ form {
   display: flex;
   border-radius: 50%;
   height: 2.2rem;
-  margin: 0 1rem 0.5rem 1rem;
+  margin: 0 1rem;
   width: 2rem;
 }
 .main-header__item-github img {
