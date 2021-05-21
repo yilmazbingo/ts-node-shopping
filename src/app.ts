@@ -10,9 +10,8 @@ import cors from "cors";
 import flash from "connect-flash";
 import favicon from "serve-favicon";
 import compression from "compression";
-// import multer from "multer";
 import { errorHandler, isAuthroized } from "./middleware";
-import { fileStorage, fileFilter, morganLogStream } from "./constants";
+import { morganLogStream, fileFilter, fileStorage } from "./constants";
 import * as errorController from "./controllers/error";
 import { UserDoc } from "./database/models";
 import { adminRoutes } from "./routes/admin";
@@ -43,9 +42,8 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 app.use(cors());
-
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer({ storage: fileStorage, fileFilter }).single("image")); //arrray for multiple
+app.use(bodyParser.json());
 
 app.use(helmet());
 app.use(compression()); //exludes images, assets<1kb, heroku does not compress
@@ -66,6 +64,8 @@ app.use(csrf());
 
 app.use(flash());
 app.use(isAuthroized);
+
+app.use(multer({ storage: fileStorage, fileFilter }).single("image")); //arrray for multiple
 
 app.use((req, res, next) => {
   if (req.session) {

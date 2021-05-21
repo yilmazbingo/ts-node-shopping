@@ -20,6 +20,7 @@ export const isAuthroized = async (
       next();
     }
   } catch (e) {
+    console.log("error", e);
     next(new Error(e));
   }
 };

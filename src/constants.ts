@@ -10,7 +10,8 @@ export const morganLogStream = fs.createWriteStream(logPath, {
   flags: "a", // new data will be appended
 });
 
-const mainFile = path.dirname(process!.mainModule!.filename);
+const mainFile = path.dirname(require!.main!.filename);
+console.log("mainFile", mainFile);
 
 const imagesPath = path.join(mainFile, "images");
 // we are specifying multer to use the diskStorage instead of the memoryStorage because using memoryStorage slows down app.
@@ -18,23 +19,20 @@ export const fileStorage = multer.diskStorage({
   destination: (req: Request, file: Express.Multer.File, cb) => {
     // if I add absolute path for "images", it would be stored in db as absolute, so when I retrieve the path for the <img src=""/> src would not accept because it requires "/images/
 
-    cb(null, "./images/");
+    cb(null, "images");
   },
   filename: (req, file, cb) => {
     cb(null, randomBytes(4).toString("hex") + "-" + file.originalname);
   },
 });
 
+const ALLOWED_FORMAT = ["image/png", "image/jpg", "image/jpeg"];
 export const fileFilter = (
   req: Request,
   file: Express.Multer.File,
   cb: FileFilterCallback
 ) => {
-  if (
-    file.mimetype === "image/png" ||
-    file.mimetype === "image/jpg" ||
-    file.mimetype === "image/jpeg"
-  ) {
+  if (ALLOWED_FORMAT.includes(file.mimetype)) {
     cb(null, true);
   } else {
     cb(null, false);

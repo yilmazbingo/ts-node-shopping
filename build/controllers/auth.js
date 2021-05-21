@@ -95,7 +95,7 @@ exports.postLogin = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
             });
         }
         const doMatch = yield bcryptjs_1.default.compare(password, user.password);
-        if (req.session && doMatch) {
+        if (doMatch) {
             req.session.isLoggedIn = true;
             req.session.user = user;
             return req.session.save((err) => {

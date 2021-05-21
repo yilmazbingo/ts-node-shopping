@@ -35,7 +35,6 @@ const cors_1 = __importDefault(require("cors"));
 const connect_flash_1 = __importDefault(require("connect-flash"));
 const serve_favicon_1 = __importDefault(require("serve-favicon"));
 const compression_1 = __importDefault(require("compression"));
-// import multer from "multer";
 const middleware_1 = require("./middleware");
 const constants_1 = require("./constants");
 const errorController = __importStar(require("./controllers/error"));
@@ -55,7 +54,7 @@ app.set("views", path_1.default.join(__dirname, "views"));
 app.use(serve_favicon_1.default(path_1.default.join(__dirname, "public", "favicon.ico")));
 app.use(cors_1.default());
 app.use(body_parser_1.default.urlencoded({ extended: false }));
-app.use(multer_1.default({ storage: constants_1.fileStorage, fileFilter: constants_1.fileFilter }).single("image")); //arrray for multiple
+app.use(body_parser_1.default.json());
 app.use(helmet_1.default());
 app.use(compression_1.default()); //exludes images, assets<1kb, heroku does not compress
 app.use(express_1.default.static(path_1.default.join(__dirname, "public")));
@@ -69,6 +68,7 @@ app.use(express_session_1.default({
 app.use(csurf_1.default());
 app.use(connect_flash_1.default());
 app.use(middleware_1.isAuthroized);
+app.use(multer_1.default({ storage: constants_1.fileStorage, fileFilter: constants_1.fileFilter }).single("image")); //arrray for multiple
 app.use((req, res, next) => {
     if (req.session) {
         res.locals.isAuthenticated = req.session.isLoggedIn;

@@ -27,6 +27,7 @@ exports.isAuthroized = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         }
     }
     catch (e) {
+        console.log("error", e);
         next(new Error(e));
     }
 });

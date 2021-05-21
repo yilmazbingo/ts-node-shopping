@@ -95,10 +95,10 @@ export const postLogin = async (
       });
     }
     const doMatch = await bcrypt.compare(password, user.password);
-    if (req.session && doMatch) {
-      req.session.isLoggedIn = true;
-      req.session.user = user;
-      return req.session.save((err) => {
+    if (doMatch) {
+      req.session!.isLoggedIn = true;
+      req.session!.user = user;
+      return req.session!.save((err) => {
         console.log(err);
         res.redirect("/");
       });
