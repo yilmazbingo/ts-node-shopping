@@ -76,7 +76,9 @@ exports.postAddProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         res.redirect("/admin/products");
     }
     catch (err) {
-        throw new errors_1.InternalServerError(err.message);
+        console.log("error in posting", err);
+        // next(new InternalServerError(err.message));
+        next(err.message);
     }
 });
 exports.getEditProduct = (req, res, next) => {
@@ -101,7 +103,8 @@ exports.getEditProduct = (req, res, next) => {
         });
     })
         .catch((err) => {
-        throw new errors_1.InternalServerError("Internal Server Error");
+        // when we call next() with an argument passed in, we let express know, we skip all other middlewares, we move to error handling middleware
+        next(new errors_1.InternalServerError("Internal Server Error"));
     });
 };
 exports.postEditProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -143,7 +146,8 @@ exports.postEditProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         res.redirect("/admin/products");
     }
     catch (e) {
-        throw new errors_1.NotFoundError();
+        // throw new NotFoundError();
+        next(new errors_1.NotFoundError());
     }
 });
 exports.getProducts = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {

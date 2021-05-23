@@ -74,7 +74,9 @@ export const postAddProduct = async (
     await product.save();
     res.redirect("/admin/products");
   } catch (err) {
-    throw new InternalServerError(err.message);
+    console.log("error in posting", err);
+    // next(new InternalServerError(err.message));
+    next(err.message);
   }
 };
 
@@ -104,7 +106,9 @@ export const getEditProduct = (
       });
     })
     .catch((err) => {
-      throw new InternalServerError("Internal Server Error");
+      // when we call next() with an argument passed in, we let express know, we skip all other middlewares, we move to error handling middleware
+
+      next(new InternalServerError("Internal Server Error"));
     });
 };
 
@@ -150,7 +154,8 @@ export const postEditProduct = async (
     await product.save();
     res.redirect("/admin/products");
   } catch (e) {
-    throw new NotFoundError();
+    // throw new NotFoundError();
+    next(new NotFoundError());
   }
 };
 

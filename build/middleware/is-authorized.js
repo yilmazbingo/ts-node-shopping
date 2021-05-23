@@ -12,8 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.isAuthroized = void 0;
 const models_1 = require("../database/models");
 exports.isAuthroized = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     // throw new Error('Sync Dummy');
-    if (req.session && !req.session.user) {
+    if (!((_a = req === null || req === void 0 ? void 0 : req.session) === null || _a === void 0 ? void 0 : _a.user)) {
         return next();
     }
     try {

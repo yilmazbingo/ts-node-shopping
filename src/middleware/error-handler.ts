@@ -12,4 +12,5 @@ export const errorHandler = (
       isAuthenticated: req.session.isLoggedIn,
     });
   }
+  // next();
 };

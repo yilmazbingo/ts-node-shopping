@@ -7,7 +7,7 @@ export const isAuthroized = async (
   next: NextFunction
 ) => {
   // throw new Error('Sync Dummy');
-  if (req.session && !req.session.user) {
+  if (!req?.session?.user) {
     return next();
   }
   try {

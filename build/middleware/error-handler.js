@@ -9,4 +9,5 @@ exports.errorHandler = (error, req, res, next) => {
             isAuthenticated: req.session.isLoggedIn,
         });
     }
+    // next();
 };

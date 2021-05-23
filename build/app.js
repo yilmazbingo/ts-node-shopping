@@ -25,7 +25,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
 const path_1 = __importDefault(require("path"));
 const express_1 = __importDefault(require("express"));
-const body_parser_1 = __importDefault(require("body-parser"));
 const express_session_1 = __importDefault(require("express-session"));
 const connect_mongodb_session_1 = __importDefault(require("connect-mongodb-session"));
 const csurf_1 = __importDefault(require("csurf"));
@@ -44,6 +43,7 @@ const auth_1 = require("./routes/auth");
 const multer_1 = __importDefault(require("multer"));
 const app = express_1.default();
 exports.app = app;
+const csrfProtection = csurf_1.default();
 const MongoDBSessionStore = connect_mongodb_session_1.default(express_session_1.default);
 const store = new MongoDBSessionStore({
     uri: process.env.MONGODB_URI,
@@ -53,36 +53,49 @@ app.set("view engine", "ejs");
 app.set("views", path_1.default.join(__dirname, "views"));
 app.use(serve_favicon_1.default(path_1.default.join(__dirname, "public", "favicon.ico")));
 app.use(cors_1.default());
-app.use(body_parser_1.default.urlencoded({ extended: false }));
-app.use(body_parser_1.default.json());
-app.use(helmet_1.default());
-app.use(compression_1.default()); //exludes images, assets<1kb, heroku does not compress
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
+app.use(express_1.default.json());
 app.use(express_1.default.static(path_1.default.join(__dirname, "public")));
 app.use("/images", express_1.default.static(path_1.default.join(__dirname, "images")));
+app.use(multer_1.default({ storage: constants_1.fileStorage, fileFilter: constants_1.fileFilter }).single("image")); //arrray for multiple
+app.use(helmet_1.default());
+app.use(compression_1.default()); //exludes images, assets<1kb, heroku does not compress
 app.use(express_session_1.default({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: store,
 }));
-app.use(csurf_1.default());
+// this has to come after session
+app.use(csrfProtection);
 app.use(connect_flash_1.default());
-app.use(middleware_1.isAuthroized);
-app.use(multer_1.default({ storage: constants_1.fileStorage, fileFilter: constants_1.fileFilter }).single("image")); //arrray for multiple
 app.use((req, res, next) => {
-    if (req.session) {
-        res.locals.isAuthenticated = req.session.isLoggedIn;
-        res.locals.csrfToken = req.csrfToken();
-    }
+    var _a;
+    // locals allows us to set local varibles into the views
+    res.locals.isAuthenticated = (_a = req === null || req === void 0 ? void 0 : req.session) === null || _a === void 0 ? void 0 : _a.isLoggedIn;
+    // csrfToken() is provided by csrf middleware.
+    res.locals.csrfToken = req.csrfToken();
+    console.log("token", req.csrfToken());
     next();
 });
+app.use(middleware_1.isAuthroized);
 app.use("/admin", admin_1.adminRoutes);
 app.use(shop_1.shopRoutes);
 app.use(auth_1.authRoutes);
 app.get("/500", errorController.get500);
 app.use(errorController.get404);
-app.use(middleware_1.errorHandler);
 app.use(morgan_1.default("combined", { stream: constants_1.morganLogStream }));
+app.use((error, req, res, next) => {
+    console.log("erorr in middleware", error);
+    res.status(500).render("500", {
+        pageTitle: "Error!",
+        path: "/500",
+        isAuthenticated: (req.session && req.session.isLoggedIn) || false,
+        errorMessage: JSON.stringify(error),
+    });
+});
+// app.use(errorHandler);
 app.listen(process.env.PORT, () => {
     console.log(`express-authentication ${process.env.PORT}`);
 });
