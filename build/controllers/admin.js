@@ -27,9 +27,7 @@ exports.getAddProduct = (req, res, next) => {
 };
 exports.postAddProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const title = req.body.title;
-    console.log("title", title);
     const image = req.file;
-    console.log("req.file", req.file);
     const price = req.body.price;
     const description = req.body.description;
     if (!image) {
@@ -65,6 +63,7 @@ exports.postAddProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     }
     try {
         const imageUrl = image.path;
+        console.log("imageUrl", imageUrl);
         const product = new models_1.Product({
             title: title,
             price: price,

@@ -26,9 +26,7 @@ export const postAddProduct = async (
   next: NextFunction
 ) => {
   const title = req.body.title;
-  console.log("title", title);
   const image = req.file;
-  console.log("req.file", req.file);
   const price = req.body.price;
   const description = req.body.description;
   if (!image) {
@@ -64,6 +62,7 @@ export const postAddProduct = async (
   }
   try {
     const imageUrl = image.path;
+    console.log("imageUrl", imageUrl);
     const product = new Product({
       title: title,
       price: price,

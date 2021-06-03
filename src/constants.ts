@@ -16,11 +16,14 @@ console.log("mainFile", mainFile);
 const imagesPath = path.join(mainFile, "images");
 // we are specifying multer to use the diskStorage instead of the memoryStorage because using memoryStorage slows down app.
 export const fileStorage = multer.diskStorage({
-  destination: (req: Request, file: Express.Multer.File, cb) => {
-    // if I add absolute path for "images", it would be stored in db as absolute, so when I retrieve the path for the <img src=""/> src would not accept because it requires "/images/
+  // destination: (req: Request, file: Express.Multer.File, cb) => {
+  //   // if I add absolute path for "images", it would be stored in db as absolute, so when I retrieve the path for the <img src=""/> src would not accept because it requires "/images/
+  //   // cb(null, path.join(__dirname, "public", "images"));
+  //   cb(null, "images");
 
-    cb(null, "images");
-  },
+  //   // cb(null, "./images");
+  // },
+  destination: "images",
   filename: (req, file, cb) => {
     cb(null, randomBytes(4).toString("hex") + "-" + file.originalname);
   },

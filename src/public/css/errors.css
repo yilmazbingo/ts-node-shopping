@@ -1,6 +1,10 @@
 .error-500 {
   color: red;
   margin: auto auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .error-404 {
