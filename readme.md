@@ -1,3 +1,7 @@
+## Production
+
+https://ts-node-shopping.herokuapp.com/
+
 ```js
 "scripts": {
     "clean": "rimraf build/*",
