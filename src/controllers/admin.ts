@@ -186,6 +186,7 @@ export const deleteProduct = async (
     return;
   }
   const prodId = req.params.productId;
+  console.log("prodid", prodId, "yilmaz");
   const product = await Product.findById(prodId);
   if (!product) {
     throw new NotFoundError();

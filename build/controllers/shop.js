@@ -20,7 +20,7 @@ const stripe_1 = __importDefault(require("stripe"));
 const models_1 = require("../database/models");
 const not_found_error_1 = require("../errors/not-found-error");
 const errors_1 = require("../errors");
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 3;
 let stripe;
 if (process.env.STRIPE_SECRET_KEY) {
     stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY, {

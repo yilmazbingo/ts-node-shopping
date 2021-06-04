@@ -7,7 +7,7 @@ import { NextFunction, Request, Response } from "express";
 import { NotFoundError } from "../errors/not-found-error";
 import { InternalServerError, NotAuthorizedError } from "../errors";
 
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 3;
 let stripe: Stripe;
 if (process.env.STRIPE_SECRET_KEY) {
   stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {

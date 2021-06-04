@@ -169,6 +169,7 @@ exports.deleteProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         return;
     }
     const prodId = req.params.productId;
+    console.log("prodid", prodId, "yilmaz");
     const product = yield models_1.Product.findById(prodId);
     if (!product) {
         throw new errors_1.NotFoundError();

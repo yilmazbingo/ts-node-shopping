@@ -59,7 +59,16 @@ app.use(express_1.default.urlencoded({ extended: false }));
 app.use(multer_1.default({ storage: constants_1.fileStorage, fileFilter: constants_1.fileFilter }).single("image")); //arrray for multiple
 app.use(express_1.default.static(path_1.default.join(__dirname, "public")));
 app.use("/images", express_1.default.static(path_1.default.join(__dirname, "images")));
-app.use(helmet_1.default());
+// app.use(helmet());
+app.use(helmet_1.default.contentSecurityPolicy({
+    directives: {
+        "default-src": ["'self'"],
+        "script-src": ["'self'", "'unsafe-inline'", "js.stripe.com"],
+        "style-src": ["'self'", "'unsafe-inline'", "fonts.googleapis.com"],
+        "frame-src": ["'self'", "js.stripe.com"],
+        "font-src": ["'self'", "fonts.googleapis.com", "fonts.gstatic.com"],
+    },
+}));
 app.use(compression_1.default()); //exludes images, assets<1kb, heroku does not compress
 app.use(express_session_1.default({
     name: "ts-authentication-app",
