@@ -11,7 +11,7 @@ export const morganLogStream = fs.createWriteStream(logPath, {
 });
 
 const mainFile = path.dirname(require!.main!.filename);
-console.log("mainFile", mainFile);
+// console.log("mainFile", mainFile);
 
 const imagesPath = path.join(mainFile, "images");
 // we are specifying multer to use the diskStorage instead of the memoryStorage because using memoryStorage slows down app.
@@ -28,6 +28,9 @@ export const fileStorage = multer.diskStorage({
     cb(null, randomBytes(4).toString("hex") + "-" + file.originalname);
   },
 });
+
+//  since I am storing cloudinary i need to get buffer and convert the buffer to base64
+export const memoryStorage = multer.memoryStorage();
 
 const ALLOWED_FORMAT = ["image/png", "image/jpg", "image/jpeg"];
 export const fileFilter = (

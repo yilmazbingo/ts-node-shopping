@@ -3,6 +3,9 @@ import { validationResult } from "express-validator";
 import { Product, ProductDoc } from "../database/models";
 import { Request, Response, NextFunction } from "express";
 import { InternalServerError, NotFoundError } from "../errors";
+import { Cloudinary } from "../services/cloudinary";
+// import { dataUri } from "../services/dataUri";
+import DataUri from "datauri";
 
 export const getAddProduct = (
   req: Request,
@@ -26,10 +29,16 @@ export const postAddProduct = async (
   next: NextFunction
 ) => {
   const title = req.body.title;
-  const image = req.file;
+  // image is buffer. cloudinary expects
+  const file64 = req.file.buffer.toString("base64");
+  // new line chars were causing Error: ENAMETOOLONG: name too long,
+  const file64OmitNewLine = file64.replace(/(\r\n|\n|\r)/gm, "");
+  // const file64 = image.buffer.toString("base64");
+  // console.log("Result", result);
+  // console.log("image", image);
   const price = req.body.price;
   const description = req.body.description;
-  if (!image) {
+  if (!req.file) {
     return res.status(422).render("admin/edit-product", {
       pageTitle: "Add Product",
       path: "/admin/add-product",
@@ -61,13 +70,15 @@ export const postAddProduct = async (
     });
   }
   try {
-    const imageUrl = image.path;
-    console.log("imageUrl", imageUrl);
+    // const imageUrl = image.path;
+    const result = await Cloudinary.upload(file64OmitNewLine);
+
     const product = new Product({
       title: title,
       price: price,
       description: description,
-      imageUrl: imageUrl,
+      // result is secure url
+      imageUrl: result,
       userId: req.user!._id,
     });
     await product.save();
@@ -147,8 +158,8 @@ export const postEditProduct = async (
     product.price = updatedPrice;
     product.description = updatedDesc;
     if (image) {
-      deleteFile(product.imageUrl);
-      product.imageUrl = image.path;
+      // deleteFile(product.imageUrl);
+      // product.imageUrl = image.path;
     }
     await product.save();
     res.redirect("/admin/products");
@@ -191,7 +202,7 @@ export const deleteProduct = async (
   if (!product) {
     throw new NotFoundError();
   }
-  deleteFile(product.imageUrl);
+  // deleteFile(product.imageUrl);
   try {
     await Product.deleteOne({ _id: prodId, userId: req.user._id });
     res.status(200).json({ message: "Success!" });

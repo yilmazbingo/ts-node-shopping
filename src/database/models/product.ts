@@ -6,6 +6,7 @@ interface ProductAttrs {
   title: ProductDoc["title"];
   price: ProductDoc["price"];
   description: ProductDoc["description"];
+  //  since I am saving images to cloudinary, I do not need to save path to database anymore
   imageUrl: ProductDoc["imageUrl"];
   userId: ProductDoc["userId"];
 }

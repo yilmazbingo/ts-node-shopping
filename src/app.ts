@@ -10,7 +10,12 @@ import flash from "connect-flash";
 import favicon from "serve-favicon";
 import compression from "compression";
 import { errorHandler, isAuthroized } from "./middleware";
-import { morganLogStream, fileFilter, fileStorage } from "./constants";
+import {
+  morganLogStream,
+  fileFilter,
+  fileStorage,
+  memoryStorage,
+} from "./constants";
 import * as errorController from "./controllers/error";
 import { UserDoc } from "./database/models";
 import { adminRoutes } from "./routes/admin";
@@ -46,7 +51,7 @@ app.use(cors());
 //I needed to ensure that my file parser was loading before the csurf module...
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(multer({ storage: fileStorage, fileFilter }).single("image")); //arrray for multiple
+app.use(multer({ storage: memoryStorage, fileFilter }).single("image")); //arrray for multiple
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join(__dirname, "images")));
