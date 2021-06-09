@@ -63,7 +63,7 @@ app.use(express_1.default.urlencoded({ extended: false }));
 app.use(multer_1.default({ storage: constants_1.memoryStorage, fileFilter: constants_1.fileFilter }).single("image")); //arrray for multiple
 app.use(express_1.default.static(path_1.default.join(__dirname, "public")));
 app.use("/images", express_1.default.static(path_1.default.join(__dirname, "images")));
-app.use(helmet_1.default());
+// app.use(helmet());
 app.use(helmet_1.default.contentSecurityPolicy({
     directives: {
         //  "default-src" used as fallback for any undeclared directives

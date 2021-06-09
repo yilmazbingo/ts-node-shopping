@@ -63,7 +63,7 @@ app.use(multer({ storage: memoryStorage, fileFilter }).single("image")); //arrra
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join(__dirname, "images")));
 
-app.use(helmet());
+// app.use(helmet());
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
