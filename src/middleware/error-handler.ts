@@ -12,6 +12,6 @@ export const errorHandler = (
     isAuthenticated: (req.session && req.session.isLoggedIn) || false,
     errorMessage: JSON.stringify(error),
   });
-  console.log("request", req);
+  // console.log("request", req);
   next();
 };

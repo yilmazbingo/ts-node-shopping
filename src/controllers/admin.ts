@@ -1,11 +1,15 @@
+import path from "path";
 import { deleteFile } from "../util/file";
 import { validationResult } from "express-validator";
 import { Product, ProductDoc } from "../database/models";
 import { Request, Response, NextFunction } from "express";
 import { InternalServerError, NotFoundError } from "../errors";
 import { Cloudinary } from "../services/cloudinary";
+
 // import { dataUri } from "../services/dataUri";
-import DataUri from "datauri";
+// import DataUri from "datauri";
+import DatauriParser from "datauri/parser";
+const parser = new DatauriParser();
 
 export const getAddProduct = (
   req: Request,
@@ -29,13 +33,11 @@ export const postAddProduct = async (
   next: NextFunction
 ) => {
   const title = req.body.title;
-  // image is buffer. cloudinary expects
-  const file64 = req.file.buffer.toString("base64");
-  // new line chars were causing Error: ENAMETOOLONG: name too long,
-  const file64OmitNewLine = file64.replace(/(\r\n|\n|\r)/gm, "");
-  // const file64 = image.buffer.toString("base64");
-  // console.log("Result", result);
-  // console.log("image", image);
+  const extName = path.extname(req.file.originalname).toString();
+  // console.log("extname", extName);
+  const file64 = parser.format(extName, req.file.buffer);
+  // const file64OmitNewLine = file64.replace(/(\r\n|\n|\r)/gm, "");
+
   const price = req.body.price;
   const description = req.body.description;
   if (!req.file) {
@@ -71,7 +73,8 @@ export const postAddProduct = async (
   }
   try {
     // const imageUrl = image.path;
-    const result = await Cloudinary.upload(file64OmitNewLine);
+    const result = await Cloudinary.upload(file64.content!);
+    console.log("result", result);
 
     const product = new Product({
       title: title,
@@ -197,7 +200,6 @@ export const deleteProduct = async (
     return;
   }
   const prodId = req.params.productId;
-  console.log("prodid", prodId, "yilmaz");
   const product = await Product.findById(prodId);
   if (!product) {
     throw new NotFoundError();

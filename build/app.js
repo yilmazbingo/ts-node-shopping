@@ -52,6 +52,10 @@ const store = new MongoDBSessionStore({
 app.set("view engine", "ejs");
 app.set("views", path_1.default.join(__dirname, "views"));
 app.use(serve_favicon_1.default(path_1.default.join(__dirname, "public", "favicon.ico")));
+app.use(function (req, res, next) {
+    res.setHeader("Content-Security-Policy-Report-Only", "default-src 'self'; font-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; frame-src 'self'");
+    next();
+});
 app.use(cors_1.default());
 //I needed to ensure that my file parser was loading before the csurf module...
 app.use(express_1.default.json());
@@ -59,15 +63,23 @@ app.use(express_1.default.urlencoded({ extended: false }));
 app.use(multer_1.default({ storage: constants_1.memoryStorage, fileFilter: constants_1.fileFilter }).single("image")); //arrray for multiple
 app.use(express_1.default.static(path_1.default.join(__dirname, "public")));
 app.use("/images", express_1.default.static(path_1.default.join(__dirname, "images")));
-// app.use(helmet());
+app.use(helmet_1.default());
 app.use(helmet_1.default.contentSecurityPolicy({
     directives: {
+        //  "default-src" used as fallback for any undeclared directives
         "default-src": ["'self'"],
         "script-src": ["'self'", "'unsafe-inline'", "js.stripe.com"],
         "style-src": ["'self'", "'unsafe-inline'", "fonts.googleapis.com"],
         "frame-src": ["'self'", "js.stripe.com"],
-        "font-src": ["'self'", "fonts.googleapis.com", "fonts.gstatic.com"],
+        "font-src": [
+            "'self'",
+            "fonts.googleapis.com",
+            "fonts.gstatic.com",
+            "res.cloudinary.com/",
+        ],
+        "img-src": ["'self'", "data:", "https://res.cloudinary.com"],
     },
+    reportOnly: true,
 }));
 app.use(compression_1.default()); //exludes images, assets<1kb, heroku does not compress
 app.use(express_session_1.default({
@@ -86,7 +98,6 @@ app.use((req, res, next) => {
     res.locals.isAuthenticated = (_a = req === null || req === void 0 ? void 0 : req.session) === null || _a === void 0 ? void 0 : _a.isLoggedIn;
     // csrfToken() is provided by csrf middleware.
     res.locals.csrfToken = req.csrfToken();
-    console.log("token", req.csrfToken());
     next();
 });
 app.use("/admin", admin_1.adminRoutes);

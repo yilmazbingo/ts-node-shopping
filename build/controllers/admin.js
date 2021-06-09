@@ -8,12 +8,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProduct = exports.getProducts = exports.postEditProduct = exports.getEditProduct = exports.postAddProduct = exports.getAddProduct = void 0;
+const path_1 = __importDefault(require("path"));
 const express_validator_1 = require("express-validator");
 const models_1 = require("../database/models");
 const errors_1 = require("../errors");
 const cloudinary_1 = require("../services/cloudinary");
+// import { dataUri } from "../services/dataUri";
+// import DataUri from "datauri";
+const parser_1 = __importDefault(require("datauri/parser"));
+const parser = new parser_1.default();
 exports.getAddProduct = (req, res, next) => {
     res.render("admin/edit-product", {
         pageTitle: "Add Product",
@@ -27,13 +35,10 @@ exports.getAddProduct = (req, res, next) => {
 };
 exports.postAddProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const title = req.body.title;
-    // image is buffer. cloudinary expects
-    const file64 = req.file.buffer.toString("base64");
-    // new line chars were causing Error: ENAMETOOLONG: name too long,
-    const file64OmitNewLine = file64.replace(/(\r\n|\n|\r)/gm, "");
-    // const file64 = image.buffer.toString("base64");
-    // console.log("Result", result);
-    // console.log("image", image);
+    const extName = path_1.default.extname(req.file.originalname).toString();
+    // console.log("extname", extName);
+    const file64 = parser.format(extName, req.file.buffer);
+    // const file64OmitNewLine = file64.replace(/(\r\n|\n|\r)/gm, "");
     const price = req.body.price;
     const description = req.body.description;
     if (!req.file) {
@@ -69,7 +74,8 @@ exports.postAddProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     }
     try {
         // const imageUrl = image.path;
-        const result = yield cloudinary_1.Cloudinary.upload(file64OmitNewLine);
+        const result = yield cloudinary_1.Cloudinary.upload(file64.content);
+        console.log("result", result);
         const product = new models_1.Product({
             title: title,
             price: price,
@@ -176,7 +182,6 @@ exports.deleteProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         return;
     }
     const prodId = req.params.productId;
-    console.log("prodid", prodId, "yilmaz");
     const product = yield models_1.Product.findById(prodId);
     if (!product) {
         throw new errors_1.NotFoundError();
