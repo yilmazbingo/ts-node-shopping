@@ -52,10 +52,13 @@ const store = new MongoDBSessionStore({
 app.set("view engine", "ejs");
 app.set("views", path_1.default.join(__dirname, "views"));
 app.use(serve_favicon_1.default(path_1.default.join(__dirname, "public", "favicon.ico")));
-app.use(function (req, res, next) {
-    res.setHeader("Content-Security-Policy-Report-Only", "default-src 'self'; font-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; frame-src 'self'");
-    next();
-});
+// app.use(function (req, res, next) {
+//   res.setHeader(
+//     "Content-Security-Policy-Report-Only",
+//     "default-src 'self'; font-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; frame-src 'self'"
+//   );
+//   next();
+// });
 app.use(cors_1.default());
 //I needed to ensure that my file parser was loading before the csurf module...
 app.use(express_1.default.json());

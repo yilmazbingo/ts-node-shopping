@@ -11,7 +11,7 @@
     "copy-assets": "ts-node src/tools/copyAssets",
     "tsc": " tsc",
     "build": "npm-run-all clean tsc copy-assets",
-    "dev": "nodemon  --watch src -e ts,ejs --exec npm run dev:start",
+    "dev": "nodemon  --watch src -e ts,ejs,css --exec npm run dev:start",
     "dev:start": "npm-run-all build start",
     "start": "node -r dotenv/config build/index.js"
   },
